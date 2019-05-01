@@ -1,0 +1,1321 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Resources": {
+        "LandmarkTestingS3Role": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "s3.amazonaws.com"
+                                ]
+                            },
+                            "Action": [
+                                "sts:AssumeRole"
+                            ]
+                        }
+                    ]
+                },
+                "Policies": [
+                    {
+                        "PolicyName": "root",
+                        "PolicyDocument": {
+                            "Statement": [
+                                {
+                                    "Action": [
+                                        "s3:*"
+                                    ],
+                                    "Resource": "*",
+                                    "Effect": "Allow"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        "LandmarkTestingPipelineRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "codepipeline.amazonaws.com"
+                                ]
+                            },
+                            "Action": [
+                                "sts:AssumeRole"
+                            ]
+                        }
+                    ]
+                },
+                "Policies": [
+                    {
+                        "PolicyName": "root",
+                        "PolicyDocument": {
+                            "Statement": [
+                                {
+                                    "Action": [
+                                        "iam:PassRole"
+                                    ],
+                                    "Resource": "*",
+                                    "Effect": "Allow",
+                                    "Condition": {
+                                        "StringEqualsIfExists": {
+                                            "iam:PassedToService": [
+                                                "cloudformation.amazonaws.com",
+                                                "elasticbeanstalk.amazonaws.com",
+                                                "ec2.amazonaws.com",
+                                                "ecs-tasks.amazonaws.com"
+                                            ]
+                                        }
+                                    }
+                                },
+                                {
+                                    "Action": [
+                                        "codecommit:CancelUploadArchive",
+                                        "codecommit:GetBranch",
+                                        "codecommit:GetCommit",
+                                        "codecommit:GetUploadArchiveStatus",
+                                        "codecommit:UploadArchive"
+                                    ],
+                                    "Resource": "*",
+                                    "Effect": "Allow"
+                                },
+                                {
+                                    "Action": [
+                                        "codedeploy:CreateDeployment",
+                                        "codedeploy:GetApplication",
+                                        "codedeploy:GetApplicationRevision",
+                                        "codedeploy:GetDeployment",
+                                        "codedeploy:GetDeploymentConfig",
+                                        "codedeploy:RegisterApplicationRevision"
+                                    ],
+                                    "Resource": "*",
+                                    "Effect": "Allow"
+                                },
+                                {
+                                    "Action": [
+                                        "elasticbeanstalk:*",
+                                        "ec2:*",
+                                        "elasticloadbalancing:*",
+                                        "autoscaling:*",
+                                        "cloudwatch:*",
+                                        "s3:*",
+                                        "sns:*",
+                                        "cloudformation:*",
+                                        "rds:*",
+                                        "sqs:*",
+                                        "ecs:*"
+                                    ],
+                                    "Resource": "*",
+                                    "Effect": "Allow"
+                                },
+                                {
+                                    "Action": [
+                                        "lambda:InvokeFunction",
+                                        "lambda:ListFunctions"
+                                    ],
+                                    "Resource": "*",
+                                    "Effect": "Allow"
+                                },
+                                {
+                                    "Action": [
+                                        "opsworks:CreateDeployment",
+                                        "opsworks:DescribeApps",
+                                        "opsworks:DescribeCommands",
+                                        "opsworks:DescribeDeployments",
+                                        "opsworks:DescribeInstances",
+                                        "opsworks:DescribeStacks",
+                                        "opsworks:UpdateApp",
+                                        "opsworks:UpdateStack"
+                                    ],
+                                    "Resource": "*",
+                                    "Effect": "Allow"
+                                },
+                                {
+                                    "Action": [
+                                        "cloudformation:CreateStack",
+                                        "cloudformation:DeleteStack",
+                                        "cloudformation:DescribeStacks",
+                                        "cloudformation:UpdateStack",
+                                        "cloudformation:CreateChangeSet",
+                                        "cloudformation:DeleteChangeSet",
+                                        "cloudformation:DescribeChangeSet",
+                                        "cloudformation:ExecuteChangeSet",
+                                        "cloudformation:SetStackPolicy",
+                                        "cloudformation:ValidateTemplate"
+                                    ],
+                                    "Resource": "*",
+                                    "Effect": "Allow"
+                                },
+                                {
+                                    "Action": [
+                                        "codebuild:BatchGetBuilds",
+                                        "codebuild:StartBuild"
+                                    ],
+                                    "Resource": "*",
+                                    "Effect": "Allow"
+                                },
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "devicefarm:ListProjects",
+                                        "devicefarm:ListDevicePools",
+                                        "devicefarm:GetRun",
+                                        "devicefarm:GetUpload",
+                                        "devicefarm:CreateUpload",
+                                        "devicefarm:ScheduleRun"
+                                    ],
+                                    "Resource": "*"
+                                },
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "servicecatalog:ListProvisioningArtifacts",
+                                        "servicecatalog:CreateProvisioningArtifact",
+                                        "servicecatalog:DescribeProvisioningArtifact",
+                                        "servicecatalog:DeleteProvisioningArtifact",
+                                        "servicecatalog:UpdateProduct"
+                                    ],
+                                    "Resource": "*"
+                                },
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "cloudformation:ValidateTemplate"
+                                    ],
+                                    "Resource": "*"
+                                },
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "ecr:DescribeImages"
+                                    ],
+                                    "Resource": "*"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        "LandmarkTestingDeployRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "codedeploy.amazonaws.com"
+                                ]
+                            },
+                            "Action": [
+                                "sts:AssumeRole"
+                            ]
+                        }
+                    ]
+                },
+                "Policies": [
+                    {
+                        "PolicyName": "root",
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "s3:*"
+                                    ],
+                                    "Resource": "*"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        "LandmarkTestingBuildRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "codebuild.amazonaws.com"
+                                ]
+                            },
+                            "Action": [
+                                "sts:AssumeRole"
+                            ]
+                        }
+                    ]
+                },
+                "Policies": [
+                    {
+                        "PolicyName": "root",
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Sid": "CloudWatchLogsPolicy",
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "logs:CreateLogGroup",
+                                        "logs:CreateLogStream",
+                                        "logs:PutLogEvents"
+                                    ],
+                                    "Resource": [
+                                        "*"
+                                    ]
+                                },
+                                {
+                                    "Sid": "CodeCommitPolicy",
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "codecommit:GitPull"
+                                    ],
+                                    "Resource": [
+                                        "*"
+                                    ]
+                                },
+                                {
+                                    "Sid": "S3GetObjectPolicy",
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "s3:GetObject",
+                                        "s3:GetObjectVersion"
+                                    ],
+                                    "Resource": [
+                                        "*"
+                                    ]
+                                },
+                                {
+                                    "Sid": "S3PutObjectPolicy",
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "s3:PutObject"
+                                    ],
+                                    "Resource": [
+                                        "*"
+                                    ]
+                                },
+                                {
+                                    "Sid": "ECRPullPolicy",
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "ecr:BatchCheckLayerAvailability",
+                                        "ecr:GetDownloadUrlForLayer",
+                                        "ecr:BatchGetImage"
+                                    ],
+                                    "Resource": [
+                                        "*"
+                                    ]
+                                },
+                                {
+                                    "Sid": "ECRAuthPolicy",
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "ecr:GetAuthorizationToken"
+                                    ],
+                                    "Resource": [
+                                        "*"
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        "LandmarkTestingPipeline": {
+            "Type": "AWS::CodePipeline::Pipeline",
+            "Properties": {
+                "ArtifactStore": {
+                    "EncryptionKey": {
+                        "Id": {
+                            "Ref": "LandmarkTestingKey"
+                        },
+                        "Type": "KMS"
+                    },
+                    "Location": {
+                        "Ref": "LandmarkTestingArtifactStore"
+                    },
+                    "Type": "S3"
+                },
+                "Name": "landmark-testing-pipeline",
+                "RestartExecutionOnUpdate": true,
+                "RoleArn": {
+                    "Fn::GetAtt": [
+                        "LandmarkTestingPipelineRole",
+                        "Arn"
+                    ]
+                },
+                "Stages": [
+                    {
+                        "Actions": [
+                            {
+                                "ActionTypeId": {
+                                    "Category": "Source",
+                                    "Owner": "ThirdParty",
+                                    "Provider": "GitHub",
+                                    "Version": "1"
+                                },
+                                "Configuration": {
+                                    "Owner": {
+                                        "Ref": "GitHubAccountName"
+                                    },
+                                    "Repo": {
+                                        "Ref": "GitHubFrontendRepo"
+                                    },
+                                    "PollForSourceChanges": false,
+                                    "Branch": {
+                                        "Ref": "GitHubBranch"
+                                    },
+                                    "OAuthToken": {
+                                        "Ref": "GitHubOAuthToken"
+                                    }
+                                },
+                                "Name": "FrontendApplicationSource",
+                                "RunOrder": 1,
+                                "OutputArtifacts": [
+                                    {
+                                        "Name": "FrontendSourceArtifact"
+                                    }
+                                ]
+                            },
+                            {
+                                "ActionTypeId": {
+                                    "Category": "Source",
+                                    "Owner": "ThirdParty",
+                                    "Provider": "GitHub",
+                                    "Version": "1"
+                                },
+                                "Configuration": {
+                                    "Owner": {
+                                        "Ref": "GitHubAccountName"
+                                    },
+                                    "Repo": {
+                                        "Ref": "GitHubBackendRepo"
+                                    },
+                                    "PollForSourceChanges": false,
+                                    "Branch": {
+                                        "Ref": "GitHubBranch"
+                                    },
+                                    "OAuthToken": {
+                                        "Ref": "GitHubOAuthToken"
+                                    }
+                                },
+                                "Name": "BackendApplicationSource",
+                                "RunOrder": 1,
+                                "OutputArtifacts": [
+                                    {
+                                        "Name": "BackendSourceArtifact"
+                                    }
+                                ]
+                            }
+                        ],
+                        "Name": "Sources"
+                    },
+                    {
+                        "Actions": [
+                            {
+                                "ActionTypeId": {
+                                    "Category": "Build",
+                                    "Owner": "AWS",
+                                    "Provider": "CodeBuild",
+                                    "Version": "1"
+                                },
+                                "Configuration": {
+                                    "ProjectName": {
+                                        "Ref": "LandmarkTestingFrontendBuildProject"
+                                    },
+                                    "PrimarySource": "FrontendSourceArtifact"
+                                },
+                                "Name": "FrontendApplicationDeploy",
+                                "RunOrder": 1,
+                                "InputArtifacts": [
+                                    {
+                                        "Name": "FrontendSourceArtifact"
+                                    }
+                                ],
+                                "OutputArtifacts": [
+                                    {
+                                        "Name": "FrontendBuildArtifact"
+                                    }
+                                ]
+                            },
+                            {
+                                "ActionTypeId": {
+                                    "Category": "Build",
+                                    "Owner": "AWS",
+                                    "Provider": "CodeBuild",
+                                    "Version": "1"
+                                },
+                                "Configuration": {
+                                    "ProjectName": {
+                                        "Ref": "LandmarkTestingBackendBuildProject"
+                                    },
+                                    "PrimarySource": "BackendSourceArtifact"
+                                },
+                                "Name": "BackendApplicationDeploy",
+                                "RunOrder": 1,
+                                "InputArtifacts": [
+                                    {
+                                        "Name": "BackendSourceArtifact"
+                                    }
+                                ],
+                                "OutputArtifacts": [
+                                    {
+                                        "Name": "BackendBuildArtifact"
+                                    }
+                                ]
+                            }
+                        ],
+                        "Name": "Build"
+                    },
+                    {
+                        "Actions": [
+                            {
+                                "ActionTypeId": {
+                                    "Category": "Deploy",
+                                    "Owner": "AWS",
+                                    "Provider": "S3",
+                                    "Version": "1"
+                                },
+                                "Configuration": {
+                                    "BucketName": {
+                                        "Ref": "LandmarkTestingFrontendDeploymentBucket"
+                                    },
+                                    "Extract": true
+                                },
+                                "Name": "FrontendApplicationDeploy",
+                                "RunOrder": 1,
+                                "InputArtifacts": [
+                                    {
+                                        "Name": "BackendBuildArtifact"
+                                    }
+                                ]
+                            },
+                            {
+                                "ActionTypeId": {
+                                    "Category": "Deploy",
+                                    "Owner": "AWS",
+                                    "Provider": "CodeDeploy",
+                                    "Version": "1"
+                                },
+                                "Configuration": {
+                                    "ApplicationName": {
+                                        "Ref": "LandmarkTestingBackendDeployApplication"
+                                    },
+                                    "DeploymentGroupName": {
+                                        "Ref": "LandmarkTestingBackendDeployGroup"
+                                    }
+                                },
+                                "Name": "BackendApplicationDeploy",
+                                "RunOrder": 1,
+                                "InputArtifacts": [
+                                    {
+                                        "Name": "BackendBuildArtifact"
+                                    }
+                                ]
+                            }
+                        ],
+                        "Name": "Deploy"
+                    }
+                ]
+            }
+        },
+        "LandmarkTestingArtifactStore": {
+            "Type": "AWS::S3::Bucket"
+        },
+        "LandmarkTestingFrontendBuildProject": {
+            "Type": "AWS::CodeBuild::Project",
+            "Properties": {
+                "Artifacts": {
+                    "ArtifactIdentifier": "FrontendApplicationBuildArtifact",
+                    "Type": "CODEPIPELINE"
+                },
+                "Description": "Builds static react application Frontend for LandmarkTesting.",
+                "EncryptionKey": {
+                    "Ref": "LandmarkTestingKey"
+                },
+                "Environment": {
+                    "ComputeType": "BUILD_GENERAL1_SMALL",
+                    "Image": "aws/codebuild/standard:1.0",
+                    "ImagePullCredentialsType": "CODEBUILD",
+                    "Type": "LINUX_CONTAINER"
+                },
+                "Name": "landmark-testing-frontend-build",
+                "ServiceRole": {
+                    "Ref": "LandmarkTestingBuildRole"
+                },
+                "Source": {
+                    "SourceIdentifier": "FrontendApplicationSource",
+                    "Type": "CODEPIPELINE"
+                }
+            }
+        },
+        "LandmarkTestingBackendBuildProject": {
+            "Type": "AWS::CodeBuild::Project",
+            "Properties": {
+                "Artifacts": {
+                    "ArtifactIdentifier": "BackendApplicationBuildArtifact",
+                    "Type": "CODEPIPELINE"
+                },
+                "Description": "Builds Flask application Backend for LandmarkTesting.",
+                "EncryptionKey": {
+                    "Ref": "LandmarkTestingKey"
+                },
+                "Environment": {
+                    "ComputeType": "BUILD_GENERAL1_SMALL",
+                    "Image": "aws/codebuild/ubuntu-base:14.04",
+                    "ImagePullCredentialsType": "CODEBUILD",
+                    "Type": "LINUX_CONTAINER"
+                },
+                "Name": "landmark-testing-backend-build",
+                "ServiceRole": {
+                    "Ref": "LandmarkTestingBuildRole"
+                },
+                "Source": {
+                    "SourceIdentifier": "BackendApplicationSource",
+                    "Type": "CODEPIPELINE"
+                }
+            }
+        },
+        "LandmarkTestingFrontendDeploymentBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+                "AccessControl": "PublicRead",
+                "BucketName": "testing.landmark-app.com",
+                "WebsiteConfiguration": {
+                    "IndexDocument": "index.html",
+                    "ErrorDocument": "index.html"
+                }
+            }
+        },
+        "LandmarkTestingPhotoBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+                "AccessControl": "Private",
+                "BucketName": "files.testing.landmark-app.com"
+            }
+        },
+        "LandmarkTestingBackendDeployApplication": {
+            "Type": "AWS::CodeDeploy::Application",
+            "Properties": {
+                "ApplicationName": "LandmarkTestingBackendCodeDeployApp",
+                "ComputePlatform": "Server"
+            }
+        },
+        "LandmarkTestingBackendDeployGroup": {
+            "Type": "AWS::CodeDeploy::DeploymentGroup",
+            "Properties": {
+                "ApplicationName": {
+                    "Ref": "LandmarkTestingBackendDeployApplication"
+                },
+                "DeploymentStyle": {
+                    "DeploymentOption": "WITH_TRAFFIC_CONTROL"
+                },
+                "LoadBalancerInfo": {
+                    "ElbInfoList": [
+                        {
+                            "Name": {
+                                "Fn::GetAtt": [
+                                    "LandmarkTestingBackendELB",
+                                    "LoadBalancerName"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                "ServiceRoleArn": {
+                    "Fn::GetAtt": [
+                        "LandmarkTestingDeployRole",
+                        "Arn"
+                    ]
+                }
+            }
+        },
+        "LandmarkTestingBackendEC2Server": {
+            "Type": "AWS::EC2::Instance",
+            "Properties": {
+                "ImageId": "ami-0de53d8956e8dcf80",
+                "InstanceType": "t2.micro",
+                "KeyName": {
+                    "Ref": "StackKeyName"
+                },
+                "SecurityGroupIds": [
+                    {
+                        "Ref": "LandmarkTestingPublicSG"
+                    }
+                ],
+                "SubnetId": {
+                    "Ref": "LandmarkTestingSubnetPublicA"
+                }
+            }
+        },
+        "LandmarkTestingBackendELB": {
+            "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+            "Properties": {
+                "IpAddressType": "ipv4",
+                "Name": "landmark-testing-backend-elb",
+                "Scheme": "internet-facing",
+                "SecurityGroups": [
+                    {
+                        "Ref": "LandmarkTestingPublicSG"
+                    }
+                ],
+                "Subnets": [
+                    {
+                        "Ref": "LandmarkTestingSubnetPublicA"
+                    },
+                    {
+                        "Ref": "LandmarkTestingSubnetPublicB"
+                    }
+                ],
+                "Type": "application"
+            }
+        },
+        "LandmarkTestingUserDB": {
+            "Type": "AWS::RDS::DBInstance",
+            "Properties": {
+                "AllocatedStorage": "20",
+                "AvailabilityZone": "us-east-1a",
+                "DBInstanceClass": "db.t2.medium",
+                "DBName": "LandmarkTestingDBUser",
+                "DBSubnetGroupName": {
+                    "Ref": "LandmarkTestingDBSubnetGroup"
+                },
+                "Engine": "postgres",
+                "MasterUsername": {
+                    "Ref": "UserDBUsername"
+                },
+                "MasterUserPassword": {
+                    "Ref": "UserDBPassword"
+                },
+                "PubliclyAccessible": false,
+                "StorageEncrypted": true,
+                "StorageType": "gp2",
+                "VPCSecurityGroups": [
+                    {
+                        "Ref": "LandmarkTestingPrivateUserDBSG"
+                    }
+                ]
+            }
+        },
+        "LandmarkTestingDBSubnetGroup": {
+            "Type": "AWS::RDS::DBSubnetGroup",
+            "Properties": {
+                "DBSubnetGroupDescription": "LandmarkTesting DB subnet group.",
+                "DBSubnetGroupName": "landmark-testing-db-subgroup",
+                "SubnetIds": [
+                    {
+                        "Ref": "LandmarkTestingSubnetPrivateA"
+                    },
+                    {
+                        "Ref": "LandmarkTestingSubnetPrivateB"
+                    },
+                    {
+                        "Ref": "LandmarkTestingSubnetPrivateC"
+                    },
+                    {
+                        "Ref": "LandmarkTestingSubnetPrivateD"
+                    }
+                ]
+            }
+        },
+        "LandmarkTestingGraphDB": {
+            "Type": "AWS::EC2::Instance",
+            "Properties": {
+                "ImageId": "ami-80861296",
+                "InstanceType": "t2.medium",
+                "KeyName": {
+                    "Ref": "StackKeyName"
+                },
+                "SecurityGroupIds": [
+                    {
+                        "Ref": "LandmarkTestingPrivateNeoSG"
+                    }
+                ],
+                "SubnetId": {
+                    "Ref": "LandmarkTestingSubnetPrivateC"
+                },
+                "UserData": {
+                    "Fn::Base64": {
+                        "Fn::Join": [
+                            "",
+                            [
+                                "#!/bin/bash -v\n",
+                                "# Make the filesystem for the database\n",
+                                "mkdir -p /var/lib/neo4j\n",
+                                "mkfs.ext4 /dev/sdb\n",
+                                "mount /dev/sdb /var/lib/neo4j\n",
+                                "echo '/dev/sdb /var/lib/neo4j auto defaults 0 0' >> /etc/fstab\n",
+                                "wget -O - http://debian.neo4j.org/neotechnology.gpg.key| apt-key add -\n",
+                                "echo 'deb http://debian.neo4j.org/repo stable/' > /etc/apt/sources.list.d/neo4j.list\n",
+                                "apt-get update -y\n",
+                                "apt-get install -y openjdk-8-jre neo4j-enterprise haproxy\n",
+                                "cat <<EOF > /etc/haproxy/haproxy.cfg\n",
+                                "global\n",
+                                "    daemon\n",
+                                "    maxconn 256\n",
+                                "\n",
+                                "defaults\n",
+                                "    mode http\n",
+                                "    timeout connect 5000ms\n",
+                                "    timeout client 50000ms\n",
+                                "    timeout server 50000ms\n",
+                                "",
+                                "frontend http-in\n",
+                                "    bind *:80\n",
+                                "    default_backend neo4j\n",
+                                "",
+                                "\n",
+                                "backend neo4j\n",
+                                "    server s1 127.0.0.1:7474 maxconn 32\n",
+                                "\n",
+                                "listen admin\n",
+                                "    bind *:8080\n",
+                                "    stats enable\n",
+                                "EOF\n",
+                                "# install the packages \n",
+                                "# tweak the config\n",
+                                "sed -i 's/ENABLED=0/ENABLED=1/' /etc/default/haproxy\n",
+                                "echo 'dbms.connector.bolt.address=0.0.0.0:7687' >> /etc/neo4j/neo4j.conf\n",
+                                "echo 'wrapper.java.additional=-Dneo4j.ext.udc.source=ec2neo' >> /etc/neo4j/neo4j-wrapper.conf\n",
+                                "service neo4j restart\n",
+                                "service haproxy restart\n",
+                                "cat <<EOF > /etc/cron.daily/neo4j_backup\n",
+                                "#!/bin/bash\n",
+                                "set -e\n",
+                                "backup_dir='/var/tmp/neo4j_backup'\n",
+                                "backup_archive='/mnt'\n",
+                                "neo4j-backup --from single://localhost -to \\${backup_dir}\n",
+                                "tar -czf \\${backup_archive}//neo4j_backup.\\$(date +%FT%T).tgz \\${backup_dir}\n",
+                                "rm -rf \\${backup_dir}\n",
+                                "EOF\n",
+                                "chown root:root /etc/cron.daily/neo4j_backup\n",
+                                "chmod 0755 /etc/cron.daily/neo4j_backup\n"
+                            ]
+                        ]
+                    }
+                },
+                "Volumes": [
+                    {
+                        "VolumeId": {
+                            "Ref": "LandmarkTestingGraphDBEBSVolume"
+                        },
+                        "Device": "/dev/sdj"
+                    }
+                ]
+            }
+        },
+        "LandmarkTestingGraphDBEBSVolume": {
+            "Type": "AWS::EC2::Volume",
+            "Properties": {
+                "AvailabilityZone": {
+                    "Fn::GetAtt": [
+                        "LandmarkTestingSubnetPrivateC",
+                        "AvailabilityZone"
+                    ]
+                },
+                "Size": "100"
+            }
+        },
+        "LandmarkTestingKey": {
+            "Type": "AWS::KMS::Key",
+            "Properties": {
+                "Description": "LandmarkTesting KMS key.",
+                "KeyPolicy": {
+                    "Version": "2012-10-17",
+                    "Id": "landmark-testing-key-default",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "AWS": "arn:aws:iam::380871635215:root"
+                            },
+                            "Action": [
+                                "kms:*"
+                            ],
+                            "Resource": "*"
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "AWS": {
+                                    "Fn::GetAtt": [
+                                        "LandmarkTestingPipelineRole",
+                                        "Arn"
+                                    ]
+                                }
+                            },
+                            "Action": [
+                                "kms:*"
+                            ],
+                            "Resource": "*"
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "AWS": {
+                                    "Fn::GetAtt": [
+                                        "LandmarkTestingBuildRole",
+                                        "Arn"
+                                    ]
+                                }
+                            },
+                            "Action": [
+                                "kms:*"
+                            ],
+                            "Resource": "*"
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "AWS": {
+                                    "Fn::GetAtt": [
+                                        "LandmarkTestingDeployRole",
+                                        "Arn"
+                                    ]
+                                }
+                            },
+                            "Action": [
+                                "kms:*"
+                            ],
+                            "Resource": "*"
+                        }
+                    ]
+                }
+            }
+        },
+        "LandmarkTestingVPC": {
+            "Type": "AWS::EC2::VPC",
+            "Properties": {
+                "CidrBlock": "10.0.0.0/16",
+                "EnableDnsSupport": true,
+                "EnableDnsHostnames": true
+            }
+        },
+        "LandmarkTestingVPCInternetGateway": {
+            "Type": "AWS::EC2::InternetGateway",
+            "Properties": {}
+        },
+        "LandmarkTestingVPCInternetGatewayAttatchment": {
+            "Type": "AWS::EC2::VPCGatewayAttachment",
+            "Properties": {
+                "InternetGatewayId": {
+                    "Ref": "LandmarkTestingVPCInternetGateway"
+                },
+                "VpcId": {
+                    "Ref": "LandmarkTestingVPC"
+                }
+            }
+        },
+        "LandmarkTestingSubnetPublicA": {
+            "Type": "AWS::EC2::Subnet",
+            "Properties": {
+                "AvailabilityZone": "us-east-1a",
+                "CidrBlock": "10.0.1.0/24",
+                "MapPublicIpOnLaunch": true,
+                "VpcId": {
+                    "Ref": "LandmarkTestingVPC"
+                }
+            }
+        },
+        "LandmarkTestingSubnetPublicB": {
+            "Type": "AWS::EC2::Subnet",
+            "Properties": {
+                "AvailabilityZone": "us-east-1b",
+                "CidrBlock": "10.0.2.0/24",
+                "MapPublicIpOnLaunch": true,
+                "VpcId": {
+                    "Ref": "LandmarkTestingVPC"
+                }
+            }
+        },
+        "LandmarkTestingSubnetPrivateA": {
+            "Type": "AWS::EC2::Subnet",
+            "Properties": {
+                "AvailabilityZone": "us-east-1a",
+                "CidrBlock": "10.0.3.0/24",
+                "MapPublicIpOnLaunch": false,
+                "VpcId": {
+                    "Ref": "LandmarkTestingVPC"
+                }
+            }
+        },
+        "LandmarkTestingSubnetPrivateB": {
+            "Type": "AWS::EC2::Subnet",
+            "Properties": {
+                "AvailabilityZone": "us-east-1b",
+                "CidrBlock": "10.0.4.0/24",
+                "MapPublicIpOnLaunch": false,
+                "VpcId": {
+                    "Ref": "LandmarkTestingVPC"
+                }
+            }
+        },
+        "LandmarkTestingSubnetPrivateC": {
+            "Type": "AWS::EC2::Subnet",
+            "Properties": {
+                "AvailabilityZone": "us-east-1c",
+                "CidrBlock": "10.0.5.0/24",
+                "MapPublicIpOnLaunch": false,
+                "VpcId": {
+                    "Ref": "LandmarkTestingVPC"
+                }
+            }
+        },
+        "LandmarkTestingSubnetPrivateD": {
+            "Type": "AWS::EC2::Subnet",
+            "Properties": {
+                "AvailabilityZone": "us-east-1d",
+                "CidrBlock": "10.0.6.0/24",
+                "MapPublicIpOnLaunch": false,
+                "VpcId": {
+                    "Ref": "LandmarkTestingVPC"
+                }
+            }
+        },
+        "LandmarkTestingPublicSG": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "GroupName": "LandmarkTestingPublicSG",
+                "GroupDescription": "LandmarkTesting Public Security Group.",
+                "SecurityGroupEgress": [
+                    {
+                        "CidrIp": "0.0.0.0/0",
+                        "FromPort": -1,
+                        "IpProtocol": "-1",
+                        "ToPort": -1
+                    }
+                ],
+                "SecurityGroupIngress": [
+                    {
+                        "CidrIp": "0.0.0.0/0",
+                        "FromPort": 80,
+                        "IpProtocol": "tcp",
+                        "ToPort": 80
+                    },
+                    {
+                        "CidrIp": "0.0.0.0/0",
+                        "FromPort": 443,
+                        "IpProtocol": "tcp",
+                        "ToPort": 443
+                    }
+                ],
+                "VpcId": {
+                    "Ref": "LandmarkTestingVPC"
+                }
+            }
+        },
+        "LandmarkTestingPrivateNeoSG": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "GroupName": "LandmarkTestingPrivateNeoSG",
+                "GroupDescription": "LandmarkTesting Private Security Group for Neo4j DB.",
+                "SecurityGroupEgress": [
+                    {
+                        "CidrIp": "0.0.0.0/0",
+                        "FromPort": -1,
+                        "IpProtocol": "-1",
+                        "ToPort": -1
+                    }
+                ],
+                "SecurityGroupIngress": [
+                    {
+                        "CidrIp": "0.0.0.0/0",
+                        "FromPort": 6362,
+                        "IpProtocol": "tcp",
+                        "ToPort": 6372
+                    },
+                    {
+                        "CidrIp": "0.0.0.0/0",
+                        "FromPort": 7474,
+                        "IpProtocol": "tcp",
+                        "ToPort": 7474
+                    },
+                    {
+                        "CidrIp": "0.0.0.0/0",
+                        "FromPort": 7473,
+                        "IpProtocol": "tcp",
+                        "ToPort": 7473
+                    },
+                    {
+                        "CidrIp": "0.0.0.0/0",
+                        "FromPort": 7687,
+                        "IpProtocol": "tcp",
+                        "ToPort": 7687
+                    }
+                ],
+                "VpcId": {
+                    "Ref": "LandmarkTestingVPC"
+                }
+            }
+        },
+        "LandmarkTestingPrivateUserDBSG": {
+            "Type": "AWS::EC2::SecurityGroup",
+            "Properties": {
+                "GroupName": "LandmarkTestingPrivateUserDBSG",
+                "GroupDescription": "LandmarkTesting EC2 Private Security Group for RDS User DB.",
+                "SecurityGroupEgress": [
+                    {
+                        "CidrIp": "0.0.0.0/0",
+                        "FromPort": -1,
+                        "IpProtocol": "-1",
+                        "ToPort": -1
+                    }
+                ],
+                "SecurityGroupIngress": [
+                    {
+                        "CidrIp": "0.0.0.0/0",
+                        "FromPort": 5432,
+                        "IpProtocol": "tcp",
+                        "ToPort": 5432
+                    }
+                ],
+                "VpcId": {
+                    "Ref": "LandmarkTestingVPC"
+                }
+            }
+        },
+        "LandmarkTestingHostedZone": {
+            "Type": "AWS::Route53::HostedZone",
+            "Properties": {
+                "Name": "testing.landmark-app.com"
+            }
+        },
+        "LandmarkTestingFrontendRecordSet": {
+            "Type": "AWS::Route53::RecordSet",
+            "Properties": {
+                "Name": "testing.landmark-app.com",
+                "Type": "A",
+                "HostedZoneId": {
+                    "Ref": "LandmarkTestingHostedZone"
+                },
+                "AliasTarget": {
+                    "DNSName": {
+                        "Fn::FindInMap": [
+                            "RegionMap",
+                            {
+                                "Ref": "AWS::Region"
+                            },
+                            "websiteendpoint"
+                        ]
+                    },
+                    "HostedZoneId": {
+                        "Fn::FindInMap": [
+                            "RegionMap",
+                            {
+                                "Ref": "AWS::Region"
+                            },
+                            "S3hostedzoneID"
+                        ]
+                    }
+                }
+            }
+        },
+        "LandmarkTestingBackendRecordSet": {
+            "Type": "AWS::Route53::RecordSet",
+            "Properties": {
+                "Name": "api.testing.landmark-app.com",
+                "Type": "A",
+                "HostedZoneId": {
+                    "Ref": "LandmarkTestingHostedZone"
+                },
+                "AliasTarget": {
+                    "DNSName": {
+                        "Fn::GetAtt": [
+                            "LandmarkTestingBackendELB",
+                            "DNSName"
+                        ]
+                    },
+                    "HostedZoneId": "Z35SXDOTRQ7X7K"
+                }
+            }
+        },
+        "LandmarkTestingPhotoRecordSet": {
+            "Type": "AWS::Route53::RecordSet",
+            "Properties": {
+                "Name": "photo.testing.landmark-app.com",
+                "Type": "A",
+                "HostedZoneId": {
+                    "Ref": "LandmarkTestingHostedZone"
+                },
+                "AliasTarget": {
+                    "DNSName": {
+                        "Fn::FindInMap": [
+                            "RegionMap",
+                            {
+                                "Ref": "AWS::Region"
+                            },
+                            "websiteendpoint"
+                        ]
+                    },
+                    "HostedZoneId": {
+                        "Fn::FindInMap": [
+                            "RegionMap",
+                            {
+                                "Ref": "AWS::Region"
+                            },
+                            "S3hostedzoneID"
+                        ]
+                    }
+                }
+            }
+        },
+        "LandmarkTestingUserDBRecordSet": {
+            "Type": "AWS::Route53::RecordSet",
+            "Properties": {
+                "Name": "user.testing.landmark-app.com",
+                "Type": "CNAME",
+                "HostedZoneId": {
+                    "Ref": "LandmarkTestingHostedZone"
+                },
+                "ResourceRecords": [
+                    {
+                        "Fn::GetAtt": [
+                            "LandmarkTestingUserDB",
+                            "Endpoint.Address"
+                        ]
+                    }
+                ],
+                "TTL": "900"
+            }
+        },
+        "LandmarkTestingNeo4jRecordSet": {
+            "Type": "AWS::Route53::RecordSet",
+            "Properties": {
+                "Name": "graph.testing.landmark-app.com",
+                "Type": "CNAME",
+                "HostedZoneId": {
+                    "Ref": "LandmarkTestingHostedZone"
+                },
+                "ResourceRecords": [
+                    {
+                        "Fn::GetAtt": [
+                            "LandmarkTestingGraphDB",
+                            "PrivateDnsName"
+                        ]
+                    }
+                ],
+                "TTL": "900"
+            }
+        }
+    },
+    "Description": "Basic template for deploying and altering LandmarkTesting Application.",
+    "Parameters": {
+        "GitHubAccountName": {
+            "Description": "GitHub account name for access to source repositories.",
+            "Type": "String",
+            "NoEcho": true
+        },
+        "GitHubFrontendRepo": {
+            "Description": "GitHub Frontend source repository.",
+            "Type": "String",
+            "Default": "frontend"
+        },
+        "GitHubBackendRepo": {
+            "Description": "GitHub Backend source repository.",
+            "Type": "String",
+            "Default": "backend"
+        },
+        "GitHubBranch": {
+            "Description": "GitHub branch for development deployment.",
+            "Type": "String",
+            "Default": "development"
+        },
+        "GitHubFrontendSecret": {
+            "Description": "GitHub secret for Frontend webhook access.",
+            "Type": "String",
+            "NoEcho": true
+        },
+        "GitHubBackendSecret": {
+            "Description": "GitHub secret for Backend webhook access.",
+            "Type": "String",
+            "NoEcho": true
+        },
+        "GitHubOAuthToken": {
+            "Description": "GitHub OAuth Token for webhook access.",
+            "Type": "String",
+            "NoEcho": true
+        },
+        "UserDBUsername": {
+            "Description": "Master username for SQL-based User Database.",
+            "Type": "String",
+            "NoEcho": true
+        },
+        "UserDBPassword": {
+            "Description": "Master password for SQL-based User Database.",
+            "Type": "String",
+            "NoEcho": true
+        },
+        "Neo4jDBUsername": {
+            "Description": "Master username for Neo4j User Database.",
+            "Type": "String",
+            "NoEcho": true
+        },
+        "Neo4jDBPassword": {
+            "Description": "Master password for Neo4j Database.",
+            "Type": "String",
+            "NoEcho": true
+        },
+        "StackKeyName": {
+            "Description": "LandmarkTesting EC2 key name.",
+            "Type": "String",
+            "Default": "landmark-testing"
+        }
+    },
+    "Mappings": {
+        "RegionMap": {
+            "us-east-1": {
+                "S3hostedzoneID": "Z3AQBSTGFYJSTF",
+                "websiteendpoint": "s3-website-us-east-1.amazonaws.com"
+            },
+            "us-west-1": {
+                "S3hostedzoneID": "Z2F56UZL2M1ACD",
+                "websiteendpoint": "s3-website-us-west-1.amazonaws.com"
+            },
+            "us-west-2": {
+                "S3hostedzoneID": "Z3BJ6K6RIION7M",
+                "websiteendpoint": "s3-website-us-west-2.amazonaws.com"
+            },
+            "eu-west-1": {
+                "S3hostedzoneID": "Z1BKCTXD74EZPE",
+                "websiteendpoint": "s3-website-eu-west-1.amazonaws.com"
+            },
+            "ap-southeast-1": {
+                "S3hostedzoneID": "Z3O0J2DXBE1FTB",
+                "websiteendpoint": "s3-website-ap-southeast-1.amazonaws.com"
+            },
+            "ap-southeast-2": {
+                "S3hostedzoneID": "Z1WCIGYICN2BYD",
+                "websiteendpoint": "s3-website-ap-southeast-2.amazonaws.com"
+            },
+            "ap-northeast-1": {
+                "S3hostedzoneID": "Z2M4EHUR26P7ZW",
+                "websiteendpoint": "s3-website-ap-northeast-1.amazonaws.com"
+            },
+            "sa-east-1": {
+                "S3hostedzoneID": "Z31GFT0UA1I2HV",
+                "websiteendpoint": "s3-website-sa-east-1.amazonaws.com"
+            }
+        }
+    }
+}
